@@ -1,6 +1,7 @@
 ﻿using Bot.Configuration;
 using Bot.Services;
 using Bot.Util;
+using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -40,8 +41,9 @@ internal class Program {
         );
 
 
-        builder.Services.AddHostedService<DiscordService>();
-        builder.Services.AddSingleton<DiscordLogger>();
+        builder.Services
+            .AddHostedService<DiscordService>()
+            .AddDiscordNetService();
         return builder.Build();
     }
 }
