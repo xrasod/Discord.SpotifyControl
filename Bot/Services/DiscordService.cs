@@ -11,17 +11,19 @@ namespace Bot.Services;
 public class DiscordService : IHostedService {
     private readonly DiscordSocketClient _client;
     private readonly SpotifyControlOptions _options;
+    private readonly Secrets _secretsOptions;
     private readonly ILogger<DiscordService> _logger;
 
-    public DiscordService(IOptions<SpotifyControlOptions> options, ILogger<DiscordService> logger, DiscordLogger discordDiscordLogger) {
-        _options = options.Value;
+    public DiscordService(IOptions<SpotifyControlOptions> appOptions, IOptions<Secrets> secretsOptions, ILogger<DiscordService> logger, DiscordLogger discordDiscordLogger) {
+        _options = appOptions.Value;
+        _secretsOptions = secretsOptions.Value;
         _logger = logger;
         _client = new DiscordSocketClient();
         _client.Log += discordDiscordLogger.Log;
     }
 
     private async Task<Task> Connect() {
-        await _client.LoginAsync(TokenType.Bot, _options.Token);
+        await _client.LoginAsync(TokenType.Bot, _secretsOptions.Token);
         await _client.StartAsync();
         return Task.CompletedTask;
     }

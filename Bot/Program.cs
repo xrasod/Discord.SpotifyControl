@@ -10,7 +10,6 @@ using Microsoft.Extensions.Logging.Console;
 namespace Bot;
 
 internal class Program {
-
     private static async Task Main(string[] args) {
         var host = CreateHostBuilder(args);
         await host.RunAsync();
@@ -29,12 +28,16 @@ internal class Program {
         builder.Configuration.Sources.Clear();
         builder.Configuration
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-            .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true, true);
+            .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true, true)
+            .AddUserSecrets<Program>()
+            .AddEnvironmentVariables();
 
         builder.Services.Configure<SpotifyControlOptions>(
             builder.Configuration.GetSection(key: nameof(SpotifyControlOptions))
         );
-
+        builder.Services.Configure<Secrets>(
+            builder.Configuration.GetSection(key: nameof(Secrets))
+        );
 
 
         builder.Services.AddHostedService<DiscordService>();
