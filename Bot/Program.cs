@@ -1,8 +1,8 @@
-﻿using Bot.Configuration;
+﻿using Bot.CommandBuilders;
+using Bot.Configuration;
+using Bot.Handlers;
 using Bot.ServiceProviders;
 using Bot.Services;
-using Bot.Util;
-using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -15,6 +15,8 @@ internal class Program {
     private static async Task Main(string[] args) {
         var host = CreateHostBuilder(args);
         await host.RunAsync();
+        
+
     }
 
     private static IHost CreateHostBuilder(string[] args) {
@@ -43,9 +45,12 @@ internal class Program {
 
 
         builder.Services
-            .AddHostedService<DiscordService>()
+            .AddHostedService<HostedService>()
+            .AddSingleton<DiscordService>()
             .AddSingleton<SpotifyService>()
-            .AddDiscordNetService();
+            .AddDiscordNetService()
+            .AddSingleton<SlashCommandBuilder>()
+            .AddSingleton<SlashCommandHandler>();
         return builder.Build();
     }
 }
