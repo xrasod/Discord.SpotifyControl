@@ -1,4 +1,5 @@
 ﻿using Bot.Configuration;
+using Bot.ServiceProviders;
 using Bot.Services;
 using Bot.Util;
 using Discord.WebSocket;
@@ -43,6 +44,7 @@ internal class Program {
 
         builder.Services
             .AddHostedService<DiscordService>()
+            .AddSingleton<SpotifyService>()
             .AddDiscordNetService();
         return builder.Build();
     }
