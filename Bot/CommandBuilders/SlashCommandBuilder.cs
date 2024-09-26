@@ -5,15 +5,8 @@ using Microsoft.Extensions.Logging;
 
 namespace Bot.CommandBuilders;
 
-public class SlashCommandBuilder {
-    private readonly ILogger<SlashCommandBuilder> _logger;
-    private readonly DiscordSocketClient _client;
-
-
-    public SlashCommandBuilder(DiscordClientService discordClientService, ILogger<SlashCommandBuilder> logger) {
-        _logger = logger;
-        _client = discordClientService.GetClient();
-    }
+public class SlashCommandBuilder(DiscordClientService discordClientService, ILogger<SlashCommandBuilder> logger) {
+    private readonly DiscordSocketClient _client = discordClientService.GetClient();
 
     private SlashCommandProperties BuildLoginCommand() =>
         new Discord.SlashCommandBuilder()
@@ -45,14 +38,17 @@ public class SlashCommandBuilder {
     // Register commands
     public async Task RegisterCommands() {
         try {
-            await _client.CreateGlobalApplicationCommandAsync(BuildLoginCommand());
-            await _client.CreateGlobalApplicationCommandAsync(BuildPlayCommand());
-            await _client.CreateGlobalApplicationCommandAsync(BuildEnqueueCommand());
-            await _client.CreateGlobalApplicationCommandAsync(BuildSkipCommand());
+            var guild = _client.GetGuild(1029766905717850122);
+
+
+            await guild.CreateApplicationCommandAsync(BuildLoginCommand());
+            await guild.CreateApplicationCommandAsync(BuildPlayCommand());
+            await guild.CreateApplicationCommandAsync(BuildEnqueueCommand());
+            await guild.CreateApplicationCommandAsync(BuildSkipCommand());
 
         }
         catch (Exception e) {
-            _logger.LogError(e, "Could not register slash commands");
+            logger.LogError(e, "Could not register slash commands");
             throw;
         }
     }

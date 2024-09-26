@@ -19,6 +19,10 @@ public class HostedService(
 
     public async Task StartAsync(CancellationToken cancellationToken) {
         await discordClientService.Connect();
+        discordClientService.GetClient().Ready += OnClientReady;
+    }
+
+    private async Task OnClientReady() {
         await slashCommandBuilder.RegisterCommands();
         await slashCommandHandler.RegisterCommandHandlers();
     }

@@ -22,8 +22,19 @@ public class SpotifyService {
         _logger.LogInformation("Successfully authenticated and started spotify client for user {User}", _accessToken);
     }
 
+    public async Task<string> QueueSong(string songUri) {
+
+        var trackId = songUri.Split("/").Last();
+        if(trackId.Contains('?')) {
+            trackId = trackId.Split("?").First();
+        }
+        var track = await _spotifyClient.Tracks.Get(trackId);
+
+        await _spotifyClient.Player.AddToQueue(new PlayerAddToQueueRequest(track.Uri));
+        return $"Queued {track.Name} by {track.Artists.First().Name}";
+    }
+
     private async Task GetAccessToken() {
-        // Authenticate with Spotify API
         try {
             SpotifyAuthService spotifyAuthService = new(_secrets.SpotifyClientId, _secrets.SpotifyClientSecret);
             _accessToken = await spotifyAuthService.Authorize();

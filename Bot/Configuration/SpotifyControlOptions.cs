@@ -3,4 +3,5 @@
 public class SpotifyControlOptions {
     public string Token { get; set; }
     public long Permissions { get; set; }
+    public string SpotifyAuthSecret { get; set; }
 }
