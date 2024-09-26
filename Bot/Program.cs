@@ -46,7 +46,7 @@ internal class Program {
 
         builder.Services
             .AddHostedService<HostedService>()
-            .AddSingleton<DiscordService>()
+            .AddSingleton<DiscordClientService>()
             .AddSingleton<SpotifyService>()
             .AddDiscordNetService()
             .AddSingleton<SlashCommandBuilder>()

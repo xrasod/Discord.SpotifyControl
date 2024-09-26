@@ -10,10 +10,9 @@ public class SlashCommandBuilder {
     private readonly DiscordSocketClient _client;
 
 
-    public SlashCommandBuilder(DiscordService discordService, ILogger<SlashCommandBuilder> logger) {
+    public SlashCommandBuilder(DiscordClientService discordClientService, ILogger<SlashCommandBuilder> logger) {
         _logger = logger;
-        _client = discordService.GetClient();
-        RegisterCommands().GetAwaiter().GetResult();
+        _client = discordClientService.GetClient();
     }
 
     private SlashCommandProperties BuildLoginCommand() =>

@@ -1,4 +1,6 @@
-﻿using Bot.Configuration;
+﻿using Bot.CommandBuilders;
+using Bot.Configuration;
+using Bot.Handlers;
 using Bot.Util;
 using Discord.WebSocket;
 using Microsoft.Extensions.Hosting;
@@ -7,19 +9,21 @@ using Microsoft.Extensions.Options;
 
 namespace Bot.Services;
 
-public class HostedService : IHostedService{
-    private readonly ILogger<HostedService> _logger;
-    private readonly DiscordService _discordService;
+public class HostedService(
+    DiscordClientService discordClientService,
+    ILogger<HostedService> logger,
+    SlashCommandBuilder slashCommandBuilder,
+    SlashCommandHandler slashCommandHandler
+    )
+    : IHostedService {
 
-    public HostedService(DiscordService discordService, ILogger<HostedService> logger) {
-        _logger = logger;
-        _discordService = discordService;
-    }
-    public Task StartAsync(CancellationToken cancellationToken) {
-        return _discordService.Connect();
+    public async Task StartAsync(CancellationToken cancellationToken) {
+        await discordClientService.Connect();
+        await slashCommandBuilder.RegisterCommands();
+        await slashCommandHandler.RegisterCommandHandlers();
     }
 
     public Task StopAsync(CancellationToken cancellationToken) {
-        return _discordService.Disconnect();
+        return discordClientService.Disconnect();
     }
 }

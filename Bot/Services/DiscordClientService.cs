@@ -7,13 +7,13 @@ using Microsoft.Extensions.Options;
 
 namespace Bot.Services;
 
-public class DiscordService {
+public class DiscordClientService {
     private readonly DiscordSocketClient _client;
     private readonly Secrets _secretsOptions;
-    private readonly ILogger<DiscordService> _logger;
+    private readonly ILogger<DiscordClientService> _logger;
     private readonly SpotifyService _spotifyService;
 
-    public DiscordService(IOptions<Secrets> secretsOptions, ILogger<DiscordService> logger, DiscordLogger discordDiscordLogger, SpotifyService spotifyService) {
+    public DiscordClientService(IOptions<Secrets> secretsOptions, ILogger<DiscordClientService> logger, DiscordLogger discordDiscordLogger, SpotifyService spotifyService) {
         _secretsOptions = secretsOptions.Value;
         _logger = logger;
         _spotifyService = spotifyService;

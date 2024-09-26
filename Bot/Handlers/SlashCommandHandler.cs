@@ -4,22 +4,20 @@ using Microsoft.Extensions.Logging;
 
 namespace Bot.Handlers;
 
-public class SlashCommandHandler {
-    private readonly SpotifyService _spotifyService;
-    private readonly ILogger<SlashCommandHandler> _logger;
-    private readonly DiscordSocketClient _client;
-    public SlashCommandHandler(DiscordService discordService, SpotifyService spotifyService, ILogger<SlashCommandHandler> logger) {
-        _spotifyService = spotifyService;
-        _logger = logger;
-        _client = discordService.GetClient();
-        _client.SlashCommandExecuted += HandleSlashCommand;
+public class SlashCommandHandler (DiscordClientService discordClientService, SpotifyService spotifyService, ILogger<SlashCommandHandler> logger){
+    private DiscordSocketClient client;
+
+    public Task RegisterCommandHandlers() {
+        client = discordClientService.GetClient();
+        client.SlashCommandExecuted += HandleSlashCommand;
+        return Task.CompletedTask;
     }
 
     private async Task HandleSlashCommand(SocketSlashCommand command) {
         switch (command.Data.Name) {
             case "login-spotify":
-                _logger.LogInformation("Received login-spotify command");
-                await _spotifyService.Connect();
+                logger.LogInformation("Received login-spotify command");
+                await spotifyService.Connect();
                 await command.RespondAsync("Successfully reauthorized with Spotify", ephemeral: true);
                 break;
             case "play":
